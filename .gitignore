@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+##################################
+# Project-specific ignored files #
+##################################
+# Ignore loot/ because it has sensitive extracted files
+loot/

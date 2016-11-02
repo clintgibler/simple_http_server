@@ -26,3 +26,13 @@ $ pip3 install -r requirements.txt --user
 $ python3 server.py
 ```
 
+## Features
+
+* For any request, this server prints the source IP, request method and any headers, which is useful for
+  verifying connectivity and a bit of fingerprinting of the host (via `User-Agent` header).
+* Routes:
+  * POST `/file/filename=<supplied_file_name>` - any content POSTed to here will be saved to
+    `loot/<supplied_file_name>`
+  * GET `/payloads/<filepath>` - serves any file in `payloads/<filepath>` - useful for supplying malicious
+    payloads/scripts to a victim machine which can then be run.
+  * A default controller that will match all other routes.

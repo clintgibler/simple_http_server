@@ -2,7 +2,7 @@ from flask import Flask
 from flask import render_template
 from flask import redirect
 from flask import url_for
-from flask import request, session, flash, send_file
+from flask import request, session, send_file, send_from_directory
 from flask import make_response # for setting cookies
 import flask
 import os
@@ -10,7 +10,19 @@ import subprocess
 import ipdb
 import datetime
 
-app = Flask(__name__)
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+LOOT_DIR = os.path.join(APP_ROOT, 'loot') # Store uploaded files in this dir
+PAYLOAD_DIR = os.path.join(APP_ROOT, 'payloads') # Files in this dir will be served at /payload/<filename>
+
+# Create a directory if it doesn't exist
+def ensure_directory(dirname):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
+app = Flask(__name__, static_url_path=PAYLOAD_DIR)
+ensure_directory(LOOT_DIR)
+ensure_directory(PAYLOAD_DIR)
 
 ##########
 # Routes #
@@ -49,9 +61,14 @@ def file():
 
     print("-----------------------")
 
-    ipdb.set_trace()
-
     return "OK"
+
+@app.route('/payloads/<path:path>')
+def payloads(path):
+    log_meta_info(request)
+    print()
+    print("Served file: %s" % os.path.join(os.path.basename(PAYLOAD_DIR), path))
+    return send_from_directory(PAYLOAD_DIR, path)
 
 # Thanks: http://flask.pocoo.org/snippets/57/
 @app.route("/", defaults={'path':''})
@@ -77,14 +94,6 @@ def get_loot_filename(filename):
 #################
 
 app.secret_key = "blah-doesn't-matter"
-
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-
-LOOT_DIR = os.path.join(APP_ROOT, 'loot') # Store uploaded files in this dir
-
-# Create the dir if necessary
-if not os.path.exists(LOOT_DIR):
-    os.makedirs(LOOT_DIR)
 
 if __name__ == "__main__":
     # app.debug = True

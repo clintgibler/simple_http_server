@@ -105,4 +105,21 @@ app.secret_key = "blah-doesn't-matter"
 
 if __name__ == "__main__":
     # app.debug = True
-    app.run(host='0.0.0.0') # Note: this makes the server publicly accessible, be careful friend
+    app.run(host='0.0.0.0') # Note: this makes the server publicly accessible, be careful my friend
+
+    #############################################
+    # Example of running this server over HTTPS #
+    #############################################
+
+    # Create a self-signed certificate
+    #   Copied from: https://www.linux.com/learn/creating-self-signed-ssl-certificates-apache-linux
+    #
+    # $ sudo openssl req -new > new.ssl.csr
+    # $ sudo openssl rsa -in privkey.pem -out new.cert.key
+    # $ sudo openssl x509 -in new.ssl.csr -out new.cert.cert -req -signkey new.cert.key -days NNN
+    #
+    # Uncomment below and specify the path to new.cert.cert and new.cert.key.
+    # import ssl
+    # context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    # context.load_cert_chain('path/to/yourcert.cert', 'path/to/yourkey.key')
+    # app.run(ssl_context=context, host='0.0.0.0', port=443)

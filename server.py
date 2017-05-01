@@ -2,7 +2,7 @@ from flask import Flask
 from flask import render_template
 from flask import redirect
 from flask import url_for
-from flask import request, session, send_file, send_from_directory
+from flask import request, session, send_file, send_from_directory, make_response
 from flask import make_response # for setting cookies
 import flask
 import os
@@ -68,7 +68,15 @@ def payloads(path):
     log_meta_info(request)
     print()
     print("Served file: %s" % os.path.join(os.path.basename(PAYLOAD_DIR), path))
+
+    # This is an example of how to make the server lie about a file's content-type
+    if path == "spoof_content.txt":
+        r = make_response(send_from_directory(PAYLOAD_DIR, path))
+        r.headers.set('Content-Type', 'image/svg+xml')
+        return r
+
     return send_from_directory(PAYLOAD_DIR, path)
+
 
 # Thanks: http://flask.pocoo.org/snippets/57/
 @app.route("/", defaults={'path':''})
